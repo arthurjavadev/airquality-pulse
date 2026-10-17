@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: airquality-pulse-demo
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn src.app:app
+    healthCheckPath: /health

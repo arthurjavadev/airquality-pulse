@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AirQuality Pulse — explore city-level air quality with a future-ready monitoring dashboard.">
+  <title>AirQuality Pulse — City Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="/" aria-label="AirQuality Pulse home">
+      <span class="brand-mark" aria-hidden="true">≈</span> AirQuality <strong>Pulse</strong>
+    </a>
+    <span class="edition">PROJECT MVP · DEMO MODE</span>
+  </header>
+
+  <main class="shell">
+    <section class="hero" aria-labelledby="headline">
+      <p class="eyebrow"><span class="dot"></span> ENVIRONMENTAL INTELLIGENCE</p>
+      <h1 id="headline">Breathe better.<br><span>Know your city.</span></h1>
+      <p class="lead">AirQuality Pulse is an upcoming platform for tracking air quality, comparing cities, and understanding pollution trends. Start by entering a city below.</p>
+      <form action="/" method="post" class="search-card">
+        <label for="city">City name</label>
+        <div class="form-row">
+          <input id="city" name="city" type="text" placeholder="e.g. Frankfurt, Berlin, London" value="{{ city }}" maxlength="80" required autocomplete="address-level2">
+          <button type="submit">Explore city <span aria-hidden="true">↗</span></button>
+        </div>
+        {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+        {% if submitted %}
+          <div class="result" role="status">
+            <span class="result-tag">INPUT RECEIVED</span>
+            <h2>You searched for: {{ city }}</h2>
+            <p>Your city name was received by the Flask backend and displayed successfully.</p>
+          </div>
+        {% endif %}
+      </form>
+      <p class="fineprint">Prototype milestone: user input → Flask backend → rendered response. Live air quality data will be integrated in subsequent modules.</p>
+    </section>
+
+    <section class="roadmap" aria-label="Platform features">
+      <article><span class="num">01 / DATA</span><h3>Air quality collection</h3><p>Planned: PM2.5, PM10, and AQI forecasts collected from a public environmental API.</p></article>
+      <article><span class="num">02 / INSIGHTS</span><h3>Trend analysis</h3><p>Planned: independent analyzer calculates trends and flags potential pollution spikes.</p></article>
+      <article><span class="num">03 / ACCESS</span><h3>City dashboard</h3><p>Current: working city input form. Future: charts, comparisons, and history.</p></article>
+    </section>
+  </main>
+  <footer>AirQuality Pulse · Course project prototype · <a href="/health">Health endpoint</a></footer>
+</body>
+</html>
