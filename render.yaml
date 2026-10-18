@@ -1,8 +1,11 @@
+# Safe web-only Blueprint for the existing free Render app.
+# Worker, cron, RabbitMQ, and persistent SQL database are NOT provisioned here.
 services:
   - type: web
-    name: airquality-pulse-demo
+    name: airquality-pulse
     runtime: python
     plan: free
+    autoDeployTrigger: checksPass
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn src.app:app
+    startCommand: gunicorn --workers 1 src.app:app
     healthCheckPath: /health

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="AirQuality Pulse — explore city-level air quality with a future-ready monitoring dashboard.">
-  <title>AirQuality Pulse — City Dashboard</title>
+  <meta name="description" content="AirQuality Pulse - explore city-level air quality with a future-ready monitoring dashboard.">
+  <title>AirQuality Pulse - City Dashboard</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
@@ -12,14 +12,14 @@
     <a class="brand" href="/" aria-label="AirQuality Pulse home">
       <span class="brand-mark" aria-hidden="true">≈</span> AirQuality <strong>Pulse</strong>
     </a>
-    <span class="edition">PROJECT MVP · DEMO MODE</span>
+    <span class="edition">COURSE PROJECT - SQL + EVENT MESSAGING</span>
   </header>
 
   <main class="shell">
     <section class="hero" aria-labelledby="headline">
       <p class="eyebrow"><span class="dot"></span> ENVIRONMENTAL INTELLIGENCE</p>
       <h1 id="headline">Breathe better.<br><span>Know your city.</span></h1>
-      <p class="lead">AirQuality Pulse is an upcoming platform for tracking air quality, comparing cities, and understanding pollution trends. Start by entering a city below.</p>
+      <p class="lead">AirQuality Pulse collects air quality forecasts, analyzes trends, and shares results for supported cities. Enter a city to explore the latest available analysis.</p>
       <form action="/" method="post" class="search-card">
         <label for="city">City name</label>
         <div class="form-row">
@@ -32,18 +32,32 @@
             <span class="result-tag">INPUT RECEIVED</span>
             <h2>You searched for: {{ city }}</h2>
             <p>Your city name was received by the Flask backend and displayed successfully.</p>
+            {% if report %}
+              <div class="insights">
+                <h3>Latest forecast analysis</h3>
+                <div class="insight-grid">
+                  <div><span>Mean PM2.5</span><strong>{{ report.mean_pm2_5 if report.mean_pm2_5 is not none else "N/A" }} ug/m3</strong></div>
+                  <div><span>Mean PM10</span><strong>{{ report.mean_pm10 if report.mean_pm10 is not none else "N/A" }} ug/m3</strong></div>
+                  <div><span>Peak European AQI</span><strong>{{ report.max_european_aqi if report.max_european_aqi is not none else "N/A" }}</strong></div>
+                  <div><span>PM2.5 trend</span><strong>{{ report.pm2_5_trend }}</strong></div>
+                </div>
+                <p class="small">Forecast data, not direct sensor measurements. Forecast hours: {{ report.forecast_hours }}.</p>
+              </div>
+            {% else %}
+              <p class="small">No stored analysis displayed yet. Event-driven collection and analysis require a connected database and running workers.</p>
+            {% endif %}
           </div>
         {% endif %}
       </form>
-      <p class="fineprint">Prototype milestone: user input → Flask backend → rendered response. Live air quality data will be integrated in subsequent modules.</p>
+      <p class="fineprint">Flow: Open-Meteo REST API -> Collector -> PostgreSQL -> RabbitMQ -> Analyzer -> Web API.</p>
     </section>
 
     <section class="roadmap" aria-label="Platform features">
-      <article><span class="num">01 / DATA</span><h3>Air quality collection</h3><p>Planned: PM2.5, PM10, and AQI forecasts collected from a public environmental API.</p></article>
-      <article><span class="num">02 / INSIGHTS</span><h3>Trend analysis</h3><p>Planned: independent analyzer calculates trends and flags potential pollution spikes.</p></article>
-      <article><span class="num">03 / ACCESS</span><h3>City dashboard</h3><p>Current: working city input form. Future: charts, comparisons, and history.</p></article>
+      <article><span class="num">01 / DATA</span><h3>Air quality collection</h3><p>Implemented: PM2.5, PM10, and AQI forecasts from Open-Meteo.</p></article>
+      <article><span class="num">02 / INSIGHTS</span><h3>Trend analysis</h3><p>Implemented: independent event-driven analyzer calculates forecast means and trends.</p></article>
+      <article><span class="num">03 / ACCESS</span><h3>City dashboard</h3><p>Working city form and REST reporting endpoint. Reports appear when the SQL pipeline is deployed.</p></article>
     </section>
   </main>
-  <footer>AirQuality Pulse · Course project prototype · <a href="/health">Health endpoint</a></footer>
+  <footer>AirQuality Pulse - Course architecture project - <a href="/health">Health endpoint</a></footer>
 </body>
 </html>

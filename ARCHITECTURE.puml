@@ -1,0 +1,48 @@
+@startuml
+!theme plain
+skinparam shadowing false
+skinparam componentStyle rectangle
+skinparam rectangleBorderColor #527080
+skinparam defaultTextAlignment center
+left to right direction
+title AirQuality Pulse - Complete Event-Driven Architecture
+
+actor "Urban user" as user
+
+rectangle "FRONT END" as fe {
+  component "Browser UI\nCity form + reports" as ui
+}
+
+rectangle "BACK END - independent processes" as be {
+  component "Web Application\nFlask + REST" as web
+  component "Data Collector\nPython scheduler" as collector
+  component "Data Analyzer\nRabbitMQ consumer" as analyzer
+}
+
+cloud "Open-Meteo\nREST API" as external
+
+database "PostgreSQL\nForecasts + summaries" as db
+queue "RabbitMQ\nairquality.analysis" as mq
+
+rectangle "OPERATIONS" as ops {
+ component "GitHub Actions\nCI tests" as ci
+ component "Prometheus / Grafana\nObservability" as monitor
+}
+
+user --> ui : Search city
+ui --> web : HTTPS / REST
+web --> db : Query summaries
+collector --> external : HTTPS GET
+collector --> db : SQL UPSERT raw forecasts
+collector --> mq : Publish collected event
+mq --> analyzer : Consume + ACK
+analyzer --> db : Read forecasts / UPSERT analysis
+web ..> monitor : HTTP metrics
+ci ..> web : Deploy after CI pass
+
+legend bottom
+  Web, Collector and Analyzer run as separate processes.
+  Messages contain metadata; detailed data remains in SQL.
+  Docker Compose runs all services locally.
+endlegend
+@enduml
